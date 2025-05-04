@@ -258,6 +258,21 @@ def get_role(db: Session, role_name: str) -> Optional[Role]:
     """Get a role by name"""
     return db.query(Role).filter(Role.name == role_name).first()
 
+def clean_permissions(permissions):
+    """Clean permissions data to handle various formats"""
+    # If permissions is a string (could happen if it comes with curly braces), clean it
+    if isinstance(permissions, str):
+        # Remove any curly braces if present
+        cleaned_str = permissions.replace('{', '').replace('}', '')
+        return [p.strip() for p in cleaned_str.split(',') if p.strip()]
+    
+    # If permissions is already a list, just return it
+    if isinstance(permissions, list):
+        return permissions
+    
+    # Default to empty list
+    return []
+
 def create_role(db: Session, role_name: str, description: str, permissions: List[str]) -> Role:
     """Create a new role"""
     # Check if role already exists
@@ -268,11 +283,14 @@ def create_role(db: Session, role_name: str, description: str, permissions: List
             status_code=status.HTTP_409_CONFLICT
         )
     
+    # Clean permissions
+    cleaned_permissions = clean_permissions(permissions)
+    
     # Create role
     db_role = Role(
         name=role_name,
         description=description,
-        permissions=permissions
+        permissions=cleaned_permissions
     )
     
     db.add(db_role)
@@ -282,7 +300,7 @@ def create_role(db: Session, role_name: str, description: str, permissions: List
     return db_role
 
 def update_role(db: Session, role_name: str, description: Optional[str] = None, 
-               permissions: Optional[List[str]] = None) -> Optional[Role]:
+                permissions: Optional[List[str]] = None) -> Optional[Role]:
     """Update an existing role"""
     db_role = get_role(db, role_name)
     if not db_role:
@@ -293,7 +311,9 @@ def update_role(db: Session, role_name: str, description: Optional[str] = None,
         db_role.description = description
     
     if permissions is not None:
-        db_role.permissions = permissions
+        # Clean permissions before updating
+        cleaned_permissions = clean_permissions(permissions)
+        db_role.permissions = cleaned_permissions
     
     db.commit()
     db.refresh(db_role)
@@ -340,3 +360,22 @@ def assign_roles(db: Session, user_id: str, roles: List[str]) -> Optional[User]:
     db.refresh(db_user)
     
     return db_user
+
+def export_roles_to_csv(db: Session) -> str:
+    """Export roles to a CSV file"""
+    roles = get_roles(db)
+    
+    # Prepare CSV data
+    output = io.StringIO()
+    fieldnames = ['Name', 'Description', 'Permissions']
+    writer = csv.DictWriter(output, fieldnames=fieldnames)
+    writer.writeheader()
+    
+    for role in roles:
+        writer.writerow({
+            'Name': role.name,
+            'Description': role.description or '',
+            'Permissions': ','.join(role.permissions) if role.permissions else ''
+        })
+    
+    return output.getvalue()
