@@ -10,10 +10,12 @@ class Result(Base):
     """Result model, equivalent to MongoDB's ResultModel"""
     __tablename__ = "results"
     
+    # Use a single primary key for simplicity
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     st_id = Column(String(50), nullable=False)
     enrollment_no = Column(String(20), nullable=False, index=True)
     extype = Column(String(20), nullable=True)
+    # Make examid a regular column, not part of primary key
     examid = Column(Integer, nullable=True)
     exam = Column(String(100), nullable=True)
     declaration_date = Column(DateTime, nullable=True)
@@ -49,10 +51,9 @@ class Result(Base):
     # Relationships
     subjects = relationship("ResultSubject", back_populates="result", cascade="all, delete-orphan")
     
-    __table_args__ = (
-        # Create unique compound index
-        {"postgresql_partition_by": "RANGE (examid)"}
-    )
+    # No partitioning for simplicity
+    # __table_args__ = {}
+    
     
     def to_dict(self):
         """Convert model to dictionary"""
@@ -97,6 +98,9 @@ class ResultSubject(Base):
     
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     result_id = Column(String(36), ForeignKey("results.id"), nullable=False)
+    # We'll keep the original foreign key structure for simplicity
+    # and handle the relationship in the application code if needed
+    
     code = Column(String(20), nullable=False)
     name = Column(String(200), nullable=False)
     credits = Column(Float, default=0)
