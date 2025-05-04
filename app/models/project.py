@@ -194,7 +194,8 @@ class ProjectLocation(Base):
     # Relationships
     department = relationship("Department")
     event = relationship("ProjectEvent", back_populates="locations")
-    project = relationship("Project", foreign_keys=[project_id], back_populates="location")
+    # Remove the back_populates to avoid bidirectional issues
+    project = relationship("Project", foreign_keys=[project_id])
     
     creator = relationship("User", foreign_keys=[created_by])
     updater = relationship("User", foreign_keys=[updated_by])
@@ -304,12 +305,13 @@ class Project(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    department = relationship("Department")
+    department = relationship("Department", foreign_keys=[department_id])
     guide_user = relationship("User", foreign_keys=[guide_user_id])
     guide_department = relationship("Department", foreign_keys=[guide_department_id])
     team = relationship("ProjectTeam", back_populates="projects")
     event = relationship("ProjectEvent", back_populates="projects")
-    location = relationship("ProjectLocation", foreign_keys=[location_id], back_populates="project")
+    # Remove the back_populates to avoid bidirectional issues
+    location = relationship("ProjectLocation", foreign_keys=[location_id])
     
     creator = relationship("User", foreign_keys=[created_by])
     updater = relationship("User", foreign_keys=[updated_by])

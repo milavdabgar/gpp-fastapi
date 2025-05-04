@@ -22,10 +22,11 @@ class Department(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    hod = relationship("User", foreign_keys=[hod_id])
+    hod = relationship("User", foreign_keys=[hod_id], backref="departments_led")
     users = relationship("User", back_populates="department", foreign_keys="User.department_id")
     faculties = relationship("Faculty", back_populates="department")
     students = relationship("Student", back_populates="department")
+    teams = relationship("ProjectTeam", back_populates="department")
     
     def to_dict(self):
         """Convert model to dictionary"""

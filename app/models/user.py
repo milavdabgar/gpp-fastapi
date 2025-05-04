@@ -13,8 +13,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 user_roles = Table(
     'user_roles',
     Base.metadata,
-    Column('user_id', ForeignKey('users.id'), primary_key=True),
-    Column('role', String(20), primary_key=True)
+    Column('user_id', String(36), ForeignKey('users.id'), primary_key=True),
+    Column('role_name', String(20), ForeignKey('roles.name'), primary_key=True)
 )
 
 class User(Base):
@@ -36,7 +36,7 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relationships
-    department = relationship("Department", back_populates="users")
+    department = relationship("Department", back_populates="users", foreign_keys=[department_id])
     faculty = relationship("Faculty", back_populates="user", uselist=False)
     student = relationship("Student", back_populates="user", uselist=False)
     
@@ -77,7 +77,8 @@ class Role(Base):
     
     name = Column(String(20), primary_key=True)
     description = Column(String(200), nullable=False)
-    permissions = Column(ARRAY(String), nullable=False)
+    # Store permissions as a comma-separated string instead of JSON
+    permissions = Column(String(500), nullable=False)
     
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -87,7 +88,7 @@ class Role(Base):
         return {
             "name": self.name,
             "description": self.description,
-            "permissions": self.permissions,
+            "permissions": self.permissions.split(',') if self.permissions else [],
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

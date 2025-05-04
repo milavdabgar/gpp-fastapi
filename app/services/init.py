@@ -51,10 +51,12 @@ def create_default_roles(db: Session) -> None:
             role = db.query(Role).filter(Role.name == role_data["name"]).first()
             if not role:
                 logger.info(f"Creating default role: {role_data['name']}")
+                # Convert permissions list to a comma-separated string
+                permissions_str = ','.join(role_data["permissions"])
                 role = Role(
                     name=role_data["name"],
                     description=role_data["description"],
-                    permissions=role_data["permissions"]
+                    permissions=permissions_str
                 )
                 db.add(role)
         
