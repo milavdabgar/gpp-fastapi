@@ -14,7 +14,11 @@ from app.middleware.error import error_handler
 app = FastAPI(
     title=APP_TITLE,
     description=APP_DESCRIPTION,
-    version=APP_VERSION
+    version=APP_VERSION,
+    # Set the correct paths for the documentation
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json"
 )
 
 # Add CORS middleware
