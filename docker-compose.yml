@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    restart: always
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/gpp_portal
+      - JWT_SECRET=docker-development-secret-key
+      - CORS_ORIGINS=http://localhost:3000
+    volumes:
+      - ./app:/app/app
+      - ./uploads:/app/uploads
+    command: uvicorn app.main:app --host 0.0.0.0 --port 9000 --reload
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=gpp_portal
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
