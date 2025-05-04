@@ -20,17 +20,27 @@ router = APIRouter(
     tags=["users"]
 )
 
-@router.get("/me", response_model=DataResponse[UserResponse])
+@router.get("/me", response_model=None)
 async def get_current_user_info(
     current_user: User = Depends(get_authenticated_user)
 ):
     """
     Get current authenticated user information
     """
-    return DataResponse(
-        status="success",
-        data=UserResponse.from_orm(current_user)
-    )
+    # Format response to match React frontend expectations
+    user_data = current_user.to_dict()
+    
+    # Ensure selectedRole is set correctly (camelCase for React)
+    if not user_data.get("selectedRole") and user_data.get("roles"):
+        user_data["selectedRole"] = user_data.get("selected_role") or user_data["roles"][0]
+    
+    return {
+        "status": "success",
+        "message": "User profile retrieved successfully",
+        "data": {
+            "user": user_data
+        }
+    }
 
 @router.patch("/updateMe", response_model=DataResponse[UserResponse])
 async def update_current_user(

@@ -9,7 +9,8 @@ from app.schemas import (
     ResponseBase, PaginatedResponse, PaginatedMeta
 )
 from app.services.user import (
-    get_roles, get_role, create_role, update_role, delete_role, assign_roles
+    get_roles, get_role, create_role, update_role, delete_role, assign_roles,
+    get_users
 )
 from app.middleware.auth import require_admin
 from app.middleware.error import AppError
@@ -129,8 +130,42 @@ async def delete_role_by_name(
         message="Role deleted successfully"
     )
 
+# User management endpoints
+@router.get("/users", response_model=None)
+async def get_admin_users(
+    page: int = Query(1, ge=1),
+    limit: int = Query(100, ge=1, le=1000),
+    search: Optional[str] = None,
+    role: Optional[str] = None,
+    department: Optional[str] = None,
+    sort_by: str = "name",
+    sort_order: str = "asc",
+    current_user: User = Depends(require_admin),
+    db: Session = Depends(get_db)
+):
+    """
+    Get all users with filtering and pagination (admin only)
+    """
+    skip = (page - 1) * limit
+    users, total = get_users(db, skip, limit, search, role, department, sort_by, sort_order)
+    
+    # Format response to match React frontend expectations
+    return {
+        "status": "success",
+        "message": "Users retrieved successfully",
+        "data": {
+            "users": [user.to_dict() for user in users]
+        },
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "total_pages": (total + limit - 1) // limit
+        }
+    }
+
 # User role assignment
-@router.patch("/users/{user_id}/roles", response_model=DataResponse)
+@router.post("/users/{user_id}/roles", response_model=DataResponse[None])
 async def assign_user_roles(
     user_id: str,
     roles: List[str],

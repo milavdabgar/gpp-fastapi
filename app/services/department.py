@@ -21,13 +21,23 @@ def get_department_by_code(db: Session, code: str) -> Optional[Department]:
 
 def get_departments(
     db: Session, 
-    skip: int = 0, 
-    limit: int = 100,
+    page: int = 1,
+    limit: int = 10,
+    search: Optional[str] = None,
     sort_by: str = "name",
     sort_order: str = "asc"
 ) -> Tuple[List[Department], int]:
     """Get all departments with pagination"""
     query = db.query(Department)
+    
+    # Apply search filter if provided
+    if search:
+        search_term = f"%{search}%"
+        query = query.filter(
+            Department.name.ilike(search_term) | 
+            Department.code.ilike(search_term) | 
+            Department.description.ilike(search_term)
+        )
     
     # Get total count for pagination
     total = query.count()
@@ -37,6 +47,9 @@ def get_departments(
         query = query.order_by(getattr(Department, sort_by).desc())
     else:
         query = query.order_by(getattr(Department, sort_by).asc())
+    
+    # Calculate skip from page and limit
+    skip = (page - 1) * limit
     
     # Apply pagination
     query = query.offset(skip).limit(limit)
