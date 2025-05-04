@@ -30,6 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Root path handler - redirect to API docs
+@app.get("/", tags=["root"], include_in_schema=False)
+async def root_redirect():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/api/docs")
+
 # Health check endpoint
 @app.get("/health", tags=["health"])
 async def health_check():

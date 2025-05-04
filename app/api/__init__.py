@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import RedirectResponse
 
 from app.api.auth import router as auth_router
 from app.api.users import router as users_router
@@ -9,6 +10,11 @@ from app.api.students import router as students_router
 
 # Combine all routers
 api_router = APIRouter(prefix="/api")
+
+# Add a root handler for the /api path
+@api_router.get("/", include_in_schema=False)
+async def api_root():
+    return RedirectResponse(url="/api/docs")
 
 # Add all routers
 api_router.include_router(auth_router)
