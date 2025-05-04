@@ -19,7 +19,7 @@ router = APIRouter(
     tags=["authentication"]
 )
 
-@router.post("/login", response_model=DataResponse[Token])
+@router.post("/login", response_model=None)
 async def login(
     login_data: LoginRequest,
     db: Session = Depends(get_db)
@@ -67,14 +67,34 @@ async def login(
     # Remove password from user data
     user_data = user.to_dict()
     
-    return DataResponse(
-        status="success",
-        message="Login successful",
-        data=Token(
-            access_token=access_token,
-            token_type="bearer"
-        )
-    )
+    # Create a custom response that matches the expected format in the React frontend
+    # Make sure the user data includes the selected_role
+    user_data = user.to_dict()
+    
+    # Print debug information
+    print(f"DEBUG - Login request selected_role: {selected_role}")
+    print(f"DEBUG - User roles: {user_data.get('roles')}")
+    print(f"DEBUG - Current user selected_role: {user_data.get('selected_role')}")
+    
+    # Ensure the selected_role is set correctly
+    if selected_role and selected_role in user_data.get("roles", []):
+        user_data["selectedRole"] = selected_role  # Use selectedRole to match React frontend
+    elif not user_data.get("selectedRole") and user_data.get("roles"):
+        user_data["selectedRole"] = user_data.get("selected_role") or user_data["roles"][0]
+    
+    # Print the final user data
+    print(f"DEBUG - Final user data: {user_data}")
+    
+    response_data = {
+        "status": "success",
+        "message": "Login successful",
+        "data": {
+            "user": user_data
+        },
+        "token": access_token
+    }
+    
+    return response_data
 
 @router.post("/login/token", response_model=DataResponse[Token])
 async def login_for_access_token(
