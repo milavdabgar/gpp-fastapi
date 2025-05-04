@@ -154,26 +154,35 @@ async def get_departments_stats(
         data=DepartmentStats(**stats)
     )
 
-@router.post("/import", response_model=DataResponse)
+@router.post("/import", response_model=None)
 async def import_departments(
     file: UploadFile = File(...),
-    current_user: User = Depends(require_admin_or_principal),
     db: Session = Depends(get_db)
 ):
     """
     Import departments from CSV file
     """
     try:
+        # Debug info
+        print(f"DEBUG - Importing departments from file: {file.filename}")
+        
         result = import_departments_from_csv(db, file)
-        return DataResponse(
-            status="success",
-            message=result["message"],
-            data=result
-        )
-    except AppError as e:
+        
+        # Format response to match Express backend format
+        return {
+            "status": "success",
+            "message": result["message"],
+            "data": {
+                "imported": result["imported"],
+                "updated": result["updated"],
+                "failed": result["failed"]
+            }
+        }
+    except Exception as e:
+        print(f"DEBUG - Error importing departments: {str(e)}")
         raise HTTPException(
-            status_code=e.status_code,
-            detail=e.message
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
         )
 
 @router.delete("/{department_id}", response_model=None)

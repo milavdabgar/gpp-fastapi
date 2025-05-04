@@ -249,6 +249,8 @@ def import_departments_from_csv(db: Session, file: UploadFile) -> Dict[str, Any]
                 db.add(new_department)
                 db.commit()
                 db.refresh(new_department)
+                # Mark as new for counting
+                setattr(new_department, '_is_new', True)
                 successful.append(new_department)
             
         except Exception as e:
@@ -258,10 +260,24 @@ def import_departments_from_csv(db: Session, file: UploadFile) -> Dict[str, Any]
                 "error": str(e)
             })
     
+    # Format the response to match Express backend format
+    imported_count = 0
+    updated_count = 0
+    
+    # Count new vs updated departments
+    for dept in successful:
+        if hasattr(dept, '_is_new') and dept._is_new:
+            imported_count += 1
+        else:
+            updated_count += 1
+    
     return {
+        "imported": imported_count,
+        "updated": updated_count,
+        "failed": len(failed),
         "successful": successful,
-        "failed": failed,
-        "message": f"{len(successful)} departments processed ({len(failed)} failed)"
+        "failedItems": failed,
+        "message": f"{imported_count} departments imported, {updated_count} updated, {len(failed)} failed"
     }
 
 def export_departments_to_csv(db: Session) -> str:
