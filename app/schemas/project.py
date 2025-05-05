@@ -18,6 +18,18 @@ class ScheduleItemBase(BaseModel):
     coordinator: Dict[str, str]  # {"userId": "...", "name": "..."}
     notes: str = ""
 
+class ScheduleItemCreate(ScheduleItemBase):
+    """Schema for creating schedule items"""
+    pass
+
+class ScheduleItemUpdate(BaseModel):
+    """Schema for updating schedule items"""
+    time: Optional[str] = None
+    activity: Optional[str] = None
+    location: Optional[str] = None
+    coordinator: Optional[Dict[str, str]] = None
+    notes: Optional[str] = None
+
 class EventBase(BaseModel):
     name: str
     description: str
@@ -53,7 +65,7 @@ class EventInDB(EventBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class EventResponse(EventBase):
     id: str
@@ -61,7 +73,7 @@ class EventResponse(EventBase):
     departments: List[Dict[str, Any]] = []  # Department objects
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class PublishResultsRequest(BaseModel):
     publish_results: bool
@@ -76,6 +88,10 @@ class TeamMemberBase(BaseModel):
     enrollment_no: str
     role: str = "Member"
     is_leader: bool = False
+
+class TeamMemberCreate(TeamMemberBase):
+    """Schema for creating team members"""
+    pass
 
 class TeamBase(BaseModel):
     name: str
@@ -100,13 +116,13 @@ class TeamInDB(TeamBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class TeamResponse(TeamBase):
     id: str
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class TeamWithDetails(TeamResponse):
     department: Optional[Dict[str, Any]] = None
@@ -148,14 +164,14 @@ class LocationInDB(LocationBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class LocationResponse(LocationBase):
     id: str
     project_id: Optional[str] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class LocationWithDetails(LocationResponse):
     department: Optional[Dict[str, Any]] = None
@@ -221,7 +237,7 @@ class EvaluationResponse(EvaluationBase):
     evaluated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class ProjectInDB(ProjectBase):
     id: str
@@ -233,7 +249,7 @@ class ProjectInDB(ProjectBase):
     central_evaluation: Optional[EvaluationResponse] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class ProjectResponse(ProjectBase):
     id: str
@@ -241,7 +257,7 @@ class ProjectResponse(ProjectBase):
     central_evaluation: Optional[EvaluationResponse] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class ProjectWithDetails(ProjectResponse):
     department: Optional[Dict[str, Any]] = None

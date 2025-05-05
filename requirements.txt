@@ -1,25 +1,20 @@
-# FastAPI and related
-fastapi
-uvicorn
-python-multipart
+fastapi>=0.109.0
+uvicorn>=0.27.0
 python-jose[cryptography]
 passlib[bcrypt]
-email-validator
-python-dotenv
-
-# Database
-sqlalchemy
+python-multipart
+sqlalchemy>=2.0.0
 psycopg2-binary
-alembic
-
-# Utilities
-pydantic
-pydantic[email]
-
-# CSV handling
+python-dotenv
+alembic>=1.13.0
 pandas
-
-# Testing
+numpy
+weasyprint
+jinja2
+aiofiles
+python-dateutil
+pydantic>=2.0.0
+email-validator>=2.0.0
 pytest
-pytest-asyncio
+pytest-cov
 httpx

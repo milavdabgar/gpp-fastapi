@@ -11,6 +11,7 @@ from app.models.project import (
     DepartmentEvaluation, CentralEvaluation
 )
 from app.models.result import Result, ResultSubject
+from app.models.feedback import FeedbackAnalysis
 
 # Import all models here to make them available to Alembic
 __all__ = [
@@ -21,5 +22,6 @@ __all__ = [
     'ProjectEvent', 'EventSchedule', 'event_departments',
     'ProjectTeam', 'TeamMember', 'ProjectLocation', 'Project',
     'DepartmentEvaluation', 'CentralEvaluation',
-    'Result', 'ResultSubject'
+    'Result', 'ResultSubject',
+    'FeedbackAnalysis'
 ]

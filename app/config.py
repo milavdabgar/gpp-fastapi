@@ -17,7 +17,7 @@ DEBUG = APP_ENV == "development"
 
 # Server settings
 HOST = os.getenv("HOST", "0.0.0.0")
-PORT = int(os.getenv("PORT", "9000"))
+PORT = int(os.getenv("PORT", "9001"))
 
 # Database settings
 DATABASE_URL = os.getenv(

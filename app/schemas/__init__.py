@@ -23,9 +23,10 @@ from app.schemas.student import (
     StudentUpdate, StudentInDB, StudentResponse, StudentWithUser, SyncResult
 )
 from app.schemas.project import (
-    ProjectStatus, ScheduleItemBase, EventBase, EventCreate, EventUpdate,
+    ProjectStatus, ScheduleItemBase, ScheduleItemCreate, ScheduleItemUpdate, 
+    EventBase, EventCreate, EventUpdate,
     EventInDB, EventResponse, PublishResultsRequest, ScheduleUpdateRequest,
-    TeamMemberBase, TeamBase, TeamCreate, TeamUpdate, TeamInDB, TeamResponse, TeamWithDetails,
+    TeamMemberBase, TeamMemberCreate, TeamBase, TeamCreate, TeamUpdate, TeamInDB, TeamResponse, TeamWithDetails,
     LocationBase, LocationCreate, LocationBatchCreate, LocationUpdate, LocationInDB,
     LocationResponse, LocationWithDetails, AssignProjectRequest,
     RequirementsBase, GuideBase, ProjectBase, ProjectCreate, ProjectUpdate,
@@ -34,8 +35,13 @@ from app.schemas.project import (
     ProjectStatistics, ProjectCategoryCounts, CategoryResponse
 )
 from app.schemas.result import (
-    SubjectBase, ResultBase, ResultImport, ResultInDB, ResultResponse,
-    ImportResponse, BatchInfo, BatchesResponse, BranchSemesterAnalysis, AnalysisResponse
+    SubjectBase, ResultBase, ResultCreate, ResultImport, ResultInDB, ResultResponse,
+    ImportResponse, BatchInfo, BatchResponse, BatchesResponse, 
+    BranchSemesterAnalysis, ResultAnalysis, AnalysisResponse
+)
+from app.schemas.feedback import (
+    QuestionScore, FeedbackBase, FeedbackCreate, FeedbackUpdate,
+    FeedbackInDB, FeedbackResponse, FeedbackAnalysisResult
 )
 
 __all__ = [
@@ -64,9 +70,10 @@ __all__ = [
     'StudentUpdate', 'StudentInDB', 'StudentResponse', 'StudentWithUser', 'SyncResult',
     
     # Project
-    'ProjectStatus', 'ScheduleItemBase', 'EventBase', 'EventCreate', 'EventUpdate',
+    'ProjectStatus', 'ScheduleItemBase', 'ScheduleItemCreate', 'ScheduleItemUpdate', 
+    'EventBase', 'EventCreate', 'EventUpdate',
     'EventInDB', 'EventResponse', 'PublishResultsRequest', 'ScheduleUpdateRequest',
-    'TeamMemberBase', 'TeamBase', 'TeamCreate', 'TeamUpdate', 'TeamInDB', 'TeamResponse', 'TeamWithDetails',
+    'TeamMemberBase', 'TeamMemberCreate', 'TeamBase', 'TeamCreate', 'TeamUpdate', 'TeamInDB', 'TeamResponse', 'TeamWithDetails',
     'LocationBase', 'LocationCreate', 'LocationBatchCreate', 'LocationUpdate', 'LocationInDB',
     'LocationResponse', 'LocationWithDetails', 'AssignProjectRequest',
     'RequirementsBase', 'GuideBase', 'ProjectBase', 'ProjectCreate', 'ProjectUpdate',
@@ -75,6 +82,11 @@ __all__ = [
     'ProjectStatistics', 'ProjectCategoryCounts', 'CategoryResponse',
     
     # Result
-    'SubjectBase', 'ResultBase', 'ResultImport', 'ResultInDB', 'ResultResponse',
-    'ImportResponse', 'BatchInfo', 'BatchesResponse', 'BranchSemesterAnalysis', 'AnalysisResponse'
+    'SubjectBase', 'ResultBase', 'ResultCreate', 'ResultImport', 'ResultInDB', 'ResultResponse',
+    'ImportResponse', 'BatchInfo', 'BatchResponse', 'BatchesResponse', 
+    'BranchSemesterAnalysis', 'ResultAnalysis', 'AnalysisResponse',
+    
+    # Feedback
+    'QuestionScore', 'FeedbackBase', 'FeedbackCreate', 'FeedbackUpdate',
+    'FeedbackInDB', 'FeedbackResponse', 'FeedbackAnalysisResult'
 ]

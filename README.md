@@ -186,6 +186,15 @@ The API maintains the same interface as the Express version to ensure compatibil
 - `DELETE /api/students/{student_id}` - Delete a student
 - `GET /api/students/department/{department_id}` - Get students by department
 
+### Feedback
+
+- `GET /api/feedback/sample` - Get sample CSV template for feedback data
+- `POST /api/feedback/upload` - Upload and process feedback data from CSV
+- `GET /api/feedback/report/{id}` - Get feedback analysis report by ID
+- `GET /api/feedback/report/{id}/latex` - Get LaTeX format feedback report
+- `GET /api/feedback/report/{id}/pdf` - Get PDF format feedback report
+- `GET /api/feedback/report/{id}/export` - Export feedback report in multiple formats as ZIP
+
 ### Admin
 
 - `GET /api/admin/roles` - Get all roles

@@ -45,6 +45,10 @@ class ResultBase(BaseModel):
     total_backlog: int = 0
     upload_batch: Optional[str] = None
 
+class ResultCreate(ResultBase):
+    """Schema for creating a new result entry"""
+    pass
+
 class ResultImport(BaseModel):
     results: List[ResultBase]
 
@@ -54,13 +58,13 @@ class ResultInDB(ResultBase):
     updated_at: datetime
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class ResultResponse(ResultBase):
     id: str
     
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated from orm_mode for Pydantic v2
 
 class ImportResponse(BaseModel):
     status: str
@@ -70,6 +74,10 @@ class BatchInfo(BaseModel):
     batch_id: str
     count: int
     latest_upload: datetime
+
+class BatchResponse(BatchInfo):
+    """Schema for batch response"""
+    pass
 
 class BatchesResponse(BaseModel):
     batches: List[BatchInfo]
@@ -85,6 +93,10 @@ class BranchSemesterAnalysis(BaseModel):
     avg_spi: float
     avg_cpi: float
     pass_percentage: float
+
+class ResultAnalysis(BranchSemesterAnalysis):
+    """Schema for result analysis response"""
+    pass
 
 class AnalysisResponse(BaseModel):
     analysis: List[BranchSemesterAnalysis]
