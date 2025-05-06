@@ -13,9 +13,13 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/gpp_portal
       - APP_ENV=development
       - DEBUG=true
+      - HOST=0.0.0.0
+      - PORT=9000
+      - DATABASE_URL=postgresql://postgres:seagate@localhost:5432/gpp_fastapi
+      - JWT_SECRET=docker-development-secret-key
+      - CORS_ORIGINS=http://localhost:3000
     command: python run.py --host 0.0.0.0 --port 9000 --reload
     depends_on:
       - postgres
@@ -28,7 +32,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=gpp_portal
+      - POSTGRES_DB=gpp_fastapi
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

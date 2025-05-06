@@ -22,7 +22,7 @@ PORT = int(os.getenv("PORT", "9001"))
 # Database settings
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    "postgresql://postgres:postgres@localhost:5432/gpp_portal"
+    "postgresql://postgres:seagate@localhost:5432/gpp_fastapi"
 )
 
 # JWT settings
